@@ -28,7 +28,11 @@ function layoutMaker (config) {
             .toLowerCase()
             .split(" ")
             .map(function (d) {
-                return {text: d, size: 10 + Math.random() * 90};
+                return {
+                    text: d,
+                    size: 10 + Math.random() * 90,
+                    color: `rgb(${Math.round(255 * Math.random())},${Math.round(255 * Math.random())},${Math.round(255 * Math.random())})`
+                };
             }))
         .padding(config.padding ?? 5)
         .rotate(function () {
@@ -57,6 +61,7 @@ function draw(words) {
     .enter().append("text")
       .style("font-size", function(d) { return d.size + "px"; })
       .style("font-family", "Impact")
+      .style("fill", function(d) { return d.color; })
       .attr("text-anchor", "middle")
       .attr("transform", function(d) {
         return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
