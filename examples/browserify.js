@@ -1,13 +1,14 @@
-var d3 = require("d3"),
-    cloud = require("../");
-
+var cloud = d3.layout.cloud;
 var layout = cloud()
     .size([500, 500])
-    .words([
-      "Hello", "world", "normally", "you", "want", "more", "words",
-      "than", "this"].map(function(d) {
-      return {text: d, size: 10 + Math.random() * 90, test: "haha"};
-    }))
+    .words("Truffaut lo-fi kinfolk, vegan roof party palo santo meggings brooklyn. Snackwave artisan man braid DIY retro truffaut tumeric helvetica. Ugh shabby chic PBR&B pork belly vegan pabst, food truck plaid direct trade franzen pour-over chillwave fingerstache. Blog pinterest intelligentsia humblebrag, farm-to-table hashtag umami williamsburg. Bushwick helvetica godard jianbing bicycle rights, salvia hashtag before they sold out lumbersexual. Waistcoat snackwave gentrify mumblecore farm-to-table banjo tbh post-ironic aesthetic"
+        .replace(".", "")
+        .replace(",","")
+        .toLowerCase()
+        .split(" ")
+        .map(function(d) {
+           return {text: d, size: 10 + Math.random() * 90};
+         }))
     .padding(5)
     .rotate(function() { return ~~(Math.random() * 2) * 90; })
     .font("Impact")
