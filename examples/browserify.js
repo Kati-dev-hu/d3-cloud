@@ -33,17 +33,13 @@ const configs =  {
         stil: 'italic'
     },
     szogek: {
-        botu: 'Arial',
-        degreeRange: {
-            from: -60,
-            to: 90,
-            count: 5
-        }
+        count: 5,
+        ksz: 30
     }
 
    }
 
-const demo = ['kozepes', 'teglalap', 'courier']
+const demo = ['kozepes', 'teglalap', 'courier', 'szogek']
 
 const conf = Object.assign({}, ...demo.map(d => configs[d] ?? {}));
 
@@ -54,6 +50,18 @@ const getFont = function (d) {
 const getFontStyle = function (d) {
     return d.stilus;
 };
+
+const kezdoSzog = function () {
+    return Math.random()*360
+};
+
+const vegSzog = function (startingAngle) {
+    const kor = 360;
+    return startingAngle + Math.random()*kor //akar itt is megadhatom a kezdoSzog inputot
+};
+
+const ksz = kezdoSzog()
+const vsz = vegSzog(ksz)
 
 const szoveg = "Truffaut lo-fi kinfolk, vegan roof party palo santo meggings brooklyn. Snackwave artisan man braid DIY retro truffaut tumeric helvetica. Ugh shabby chic PBR&B pork belly vegan pabst, food truck plaid direct trade franzen pour-over chillwave fingerstache. Blog pinterest intelligentsia humblebrag, farm-to-table hashtag umami williamsburg. Bushwick helvetica godard jianbing bicycle rights, salvia hashtag before they sold out lumbersexual. Waistcoat snackwave gentrify mumblecore farm-to-table banjo tbh post-ironic aesthetic";
 // const szoveg = "Truffaut lo-fi kinfolk, vegan roof party palo santo meggings brooklyn.";
@@ -76,10 +84,23 @@ function layoutMaker (config) {
                 }}))
 
         .padding(config.padding ?? 5)
-        .rotate(function () {
-            return Math.floor(Math.random() * 2) * 90;
+     /* .rotate(function () {
+            return Math.random()*(vegSzog()-kezdoSzog())+kezdoSzog();
+        // .rotate(function () {
+            //   return Math.floor(Math.random() * 2) * 90;
         })
-
+     */
+        .rotate(function () {
+            const szogTartomany = vsz - ksz;
+            const lepesVagyIntervallumSzam = config.count - 1;
+            const szogLepes = szogTartomany / lepesVagyIntervallumSzam;
+            const randomUpTo = function (upto) {
+                return Math.random() * upto
+            };
+            const randomUpToCount = randomUpTo(config.count);
+            const index = Math.floor(randomUpToCount);
+            return index * szogLepes + ksz
+        })
         .font(getFont)
         .fontStyle(getFontStyle)
         .fontSize(function (d) {
