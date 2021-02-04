@@ -11,8 +11,12 @@ const configs =  {
         width: 1000,
         height: 300
     },
+    ovalis: {
+        shape: 'oval'
+
+    },
     suru: {
-        padding: 0
+        padding: 1
     },
     kozepes: {
         padding: 5
@@ -27,19 +31,20 @@ const configs =  {
         botu: 'Arial'
     },
     kover: {
-        stil: 'bold'
+        vastag: 'bold'
     },
     dolt: {
         stil: 'italic'
     },
     szogek: {
-        count: 5,
-        ksz: 30
+        count: 6,
+        ksz: 0,
+        vsz:120
     }
 
    }
 
-const demo = ['kozepes', 'teglalap', 'courier', 'szogek']
+const demo = ['suru', 'teglalap', 'courier', 'szogek', 'kover' ]
 
 const conf = Object.assign({}, ...demo.map(d => configs[d] ?? {}));
 
@@ -49,6 +54,10 @@ const getFont = function (d) {
 
 const getFontStyle = function (d) {
     return d.stilus;
+};
+
+const getFontWeight = function (d) {
+    return d.vastagsag;
 };
 
 const kezdoSzog = function () {
@@ -76,11 +85,13 @@ function layoutMaker (config) {
             .split(" ")
             .map(function (d) {
                 return {
+               //   text: d.concat("wow"),
                     text: d,
                     size: 10 + Math.random() * 50,
                     color: `rgb(${Math.round(255 * Math.random())},${Math.round(255 * Math.random())},${Math.round(255 * Math.random())})`,
                     betuTipus: config.botu ?? 'Impact',
-                    stilus: config.stil ?? 'normal'
+                    stilus: config.stil ?? 'normal',
+                    vastagsag: config.vastag ?? 'normal'
                 }}))
 
         .padding(config.padding ?? 5)
@@ -91,15 +102,16 @@ function layoutMaker (config) {
         })
      */
         .rotate(function () {
-            const szogTartomany = vsz - ksz;
-            const lepesVagyIntervallumSzam = config.count - 1;
+            const szogTartomany = config.vsz - config.ksz;
+            const count = config.count ?? 360;
+            const lepesVagyIntervallumSzam = count - 1;
             const szogLepes = szogTartomany / lepesVagyIntervallumSzam;
             const randomUpTo = function (upto) {
                 return Math.random() * upto
             };
-            const randomUpToCount = randomUpTo(config.count);
+            const randomUpToCount = randomUpTo(count);
             const index = Math.floor(randomUpToCount);
-            return index * szogLepes + ksz
+            return index * szogLepes + config.ksz
         })
         .font(getFont)
         .fontStyle(getFontStyle)
@@ -126,10 +138,11 @@ function draw(words) {
       .style("font-size", function(d) { return d.size + "px"; })
       .style("font-family", getFont)
       .style("font-style", getFontStyle)
+      .style("font-weight", getFontWeight)
       .style("fill", function(d) { return d.color; })
       .attr("text-anchor", "middle")
       .attr("transform", function(d) {
-        return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-      })
-      .text(function(d) { return d.text; });
+        return `translate(${d.x}, ${d.y}) rotate(${d.rotate})`;
+        })
+      .text(function(d) { return d.text });
 }
