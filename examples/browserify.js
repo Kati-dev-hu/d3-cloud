@@ -1,25 +1,20 @@
-debugger
 
 var cloud = d3.layout.cloud;
 
 const configs =  {
     negyzet: {
-        width: 500,
-        height: 500,
+        width: 1000,
+        height: 1000,
             },
     teglalap: {
         width: 1000,
-        height: 300
-    },
-    ovalis: {
-        shape: 'oval'
-
+        height: 600
     },
     suru: {
-        padding: 1
+        padding: 2
     },
     kozepes: {
-        padding: 5
+        padding: 3
     },
     laza: {
         padding: 10
@@ -38,13 +33,13 @@ const configs =  {
     },
     szogek: {
         count: 6,
-        ksz: 0,
-        vsz:120
+        ksz: -75,
+        vsz: 75
     }
 
    }
 
-const demo = ['suru', 'teglalap', 'courier', 'szogek', 'kover' ]
+const demo = ['kozepes', 'teglalap', 'szogek', 'kover' ]
 
 const conf = Object.assign({}, ...demo.map(d => configs[d] ?? {}));
 
@@ -72,23 +67,40 @@ const vegSzog = function (startingAngle) {
 const ksz = kezdoSzog()
 const vsz = vegSzog(ksz)
 
-const szoveg = "Truffaut lo-fi kinfolk, vegan roof party palo santo meggings brooklyn. Snackwave artisan man braid DIY retro truffaut tumeric helvetica. Ugh shabby chic PBR&B pork belly vegan pabst, food truck plaid direct trade franzen pour-over chillwave fingerstache. Blog pinterest intelligentsia humblebrag, farm-to-table hashtag umami williamsburg. Bushwick helvetica godard jianbing bicycle rights, salvia hashtag before they sold out lumbersexual. Waistcoat snackwave gentrify mumblecore farm-to-table banjo tbh post-ironic aesthetic";
+const szoveg = "Truffaut lo-fi kinfolk, vegan roof party palo santo meggings brooklyn. Snackwave artisan man braid DIY retro truffaut tumeric helvetica. Ugh shabby chic PBR&B pork belly vegan pabst, food truck plaid direct trade franzen pour-over chillwave fingerstache. Blog pinterest intelligentsia humblebrag, farm-to-table hashtag umami williamsburg. Bushwick helvetica godard jianbing bicycle rights, salvia hashtag before they sold out lumbersexual. Waistcoat snackwave gentrify mumblecore farm-to-table banjo tbh post-ironic aesthetic. Bushwick selfies poutine kinfolk bicycle rights williamsburg, cray affogato iPhone sustainable. Shoreditch lo-fi tbh, palo santo affogato banh mi narwhal. Pickled pitchfork heirloom vice man bun normcore post-ironic ethical freegan blog. Chillwave readymade activated charcoal, shaman chia literally fixie stumptown jianbing yuccie lo-fi kinfolk coloring book small batch helvetica.";
 // const szoveg = "Truffaut lo-fi kinfolk, vegan roof party palo santo meggings brooklyn.";
+
+function getWidth (config) {
+    return config.width ?? 500
+}
+
+function getHeight (config) {
+    return config.height ?? 500
+}
 
 function layoutMaker (config) {
 
     return cloud()
-        .size([config.width ?? 500, config.height ?? 500])
+        .size([config.width ?? 1000, config.height ?? 500])
         .words(szoveg
+            //
             .replace(/[,.]/g, "")
+            //
             .toLowerCase()
+            //
             .split(" ")
+            //
+            .filter(function (d, index, a) {
+                return a.indexOf(d) === index;
+            })
+            //
             .map(function (d) {
+                const weight = Math.random() ** 5;
                 return {
                //   text: d.concat("wow"),
                     text: d,
-                    size: 10 + Math.random() * 50,
-                    color: `rgb(${Math.round(255 * Math.random())},${Math.round(255 * Math.random())},${Math.round(255 * Math.random())})`,
+                    size: 10 + weight * 90,
+                    color: `rgb(${Math.round(255 * Math.random())},${Math.round(0 * Math.random())},${Math.round(255 * Math.random())})`,
                     betuTipus: config.botu ?? 'Impact',
                     stilus: config.stil ?? 'normal',
                     vastagsag: config.vastag ?? 'normal'
@@ -118,13 +130,13 @@ function layoutMaker (config) {
         .fontSize(function (d) {
             return d.size;
         })
-        .on("end", draw)
 }
 
 
 const layout = layoutMaker(conf);
 
-layout.start();
+
+layout.on('end', draw).start();
 
 function draw(words) {
   d3.select("body").append("svg")
@@ -141,8 +153,11 @@ function draw(words) {
       .style("font-weight", getFontWeight)
       .style("fill", function(d) { return d.color; })
       .attr("text-anchor", "middle")
+      .attr("transform", 'translate(1000,1000) rotate(0)')
+      .transition()
+      .duration(1000)
       .attr("transform", function(d) {
-        return `translate(${d.x}, ${d.y}) rotate(${d.rotate})`;
-        })
+          return `translate(${d.x}, ${d.y}) rotate(${d.rotate})`; //147-es sort igy
+      })
       .text(function(d) { return d.text });
 }
