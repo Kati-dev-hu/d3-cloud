@@ -78,10 +78,10 @@ function getHeight (config) {
     return config.height ?? 500
 }
 
-function layoutMaker (config) {
+function layoutMaker (bonyesz) {
 
     return cloud()
-        .size([config.width ?? 1000, config.height ?? 500])
+        .size([getWidth(bonyesz), getHeight(bonyesz)])
         .words(szoveg
             //
             .replace(/[,.]/g, "")
@@ -101,12 +101,12 @@ function layoutMaker (config) {
                     text: d,
                     size: 10 + weight * 90,
                     color: `rgb(${Math.round(255 * Math.random())},${Math.round(0 * Math.random())},${Math.round(255 * Math.random())})`,
-                    betuTipus: config.botu ?? 'Impact',
-                    stilus: config.stil ?? 'normal',
-                    vastagsag: config.vastag ?? 'normal'
+                    betuTipus: bonyesz.botu ?? 'Impact',
+                    stilus: bonyesz.stil ?? 'normal',
+                    vastagsag: bonyesz.vastag ?? 'normal'
                 }}))
 
-        .padding(config.padding ?? 5)
+        .padding(bonyesz.padding ?? 5)
      /* .rotate(function () {
             return Math.random()*(vegSzog()-kezdoSzog())+kezdoSzog();
         // .rotate(function () {
@@ -114,8 +114,8 @@ function layoutMaker (config) {
         })
      */
         .rotate(function () {
-            const szogTartomany = config.vsz - config.ksz;
-            const count = config.count ?? 360;
+            const szogTartomany = bonyesz.vsz - bonyesz.ksz;
+            const count = bonyesz.count ?? 360;
             const lepesVagyIntervallumSzam = count - 1;
             const szogLepes = szogTartomany / lepesVagyIntervallumSzam;
             const randomUpTo = function (upto) {
@@ -123,7 +123,7 @@ function layoutMaker (config) {
             };
             const randomUpToCount = randomUpTo(count);
             const index = Math.floor(randomUpToCount);
-            return index * szogLepes + config.ksz
+            return index * szogLepes + bonyesz.ksz
         })
         .font(getFont)
         .fontStyle(getFontStyle)
@@ -132,18 +132,19 @@ function layoutMaker (config) {
         })
 }
 
-
 const layout = layoutMaker(conf);
 
 
 layout.on('end', draw).start();
-
+debugger
 function draw(words) {
   d3.select("body").append("svg")
-      .attr("width", layout.size()[0])
-      .attr("height", layout.size()[1])
-    .append("g")
-      .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+      .attr("width", getWidth(conf))
+      .attr("height", getHeight(conf))
+      .append("g")
+      .attr("transform", function() {
+          return `translate(${getWidth(conf) / 2}, ${getHeight(conf) / 2})`;
+      })
     .selectAll("text")
       .data(words)
     .enter().append("text")
