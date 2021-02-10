@@ -103,7 +103,8 @@ function layoutMaker (bonyesz) {
                     color: `rgb(${Math.round(255 * Math.random())},${Math.round(0 * Math.random())},${Math.round(255 * Math.random())})`,
                     betuTipus: bonyesz.botu ?? 'Impact',
                     stilus: bonyesz.stil ?? 'normal',
-                    vastagsag: bonyesz.vastag ?? 'normal'
+                    vastagsag: bonyesz.vastag ?? 'normal',
+                    hovirag: true,
                 }}))
 
         .padding(bonyesz.padding ?? 5)
@@ -136,29 +137,28 @@ const layout = layoutMaker(conf);
 
 
 layout.on('end', draw).start();
-debugger
+
 function draw(words) {
-  d3.select("body").append("svg")
+    const fs = d => { return d.size + "px"; };
+    d3.select("body").append("svg")
       .attr("width", getWidth(conf))
       .attr("height", getHeight(conf))
       .append("g")
-      .attr("transform", function() {
-          return `translate(${getWidth(conf) / 2}, ${getHeight(conf) / 2})`;
-      })
+      .attr("transform", `translate(${getWidth(conf) / 2}, ${getHeight(conf) / 2})`)
     .selectAll("text")
       .data(words)
     .enter().append("text")
-      .style("font-size", function(d) { return d.size + "px"; })
+      .style("font-size", fs)
       .style("font-family", getFont)
       .style("font-style", getFontStyle)
       .style("font-weight", getFontWeight)
-      .style("fill", function(d) { return d.color; })
+      .style("fill", (d) => d.color)
       .attr("text-anchor", "middle")
       .attr("transform", 'translate(1000,1000) rotate(0)')
       .transition()
       .duration(1000)
       .attr("transform", function(d) {
-          return `translate(${d.x}, ${d.y}) rotate(${d.rotate})`; //147-es sort igy
+          return `translate(${d.x}, ${d.y}) rotate(${d.rotate})`;
       })
       .text(function(d) { return d.text });
 }
