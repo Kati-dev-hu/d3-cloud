@@ -138,8 +138,11 @@ const layout = layoutMaker(conf);
 
 layout.on('end', draw).start();
 
+const fs = d => {
+    return d.size + "px";
+}
+
 function draw(words) {
-    const fs = d => { return d.size + "px"; };
     d3.select("body").append("svg")
       .attr("width", getWidth(conf))
       .attr("height", getHeight(conf))
