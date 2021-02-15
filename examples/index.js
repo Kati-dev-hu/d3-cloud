@@ -41,7 +41,8 @@ const configs =  {
 
 const demo = ['kozepes', 'teglalap', 'szogek', 'kover' ]
 
-const conf = Object.assign({}, ...demo.map(d => configs[d] ?? {}));
+const conf = Object.assign({}, ...demo.map(d => configs[d] || {}));
+// const conf = Object.assign({}, configs['kozepes'],configs['teglalap'],configs['szogek'],configs['kover'], )
 
 const getFont = function (d) {
     return d.betuTipus;
@@ -71,11 +72,11 @@ const szoveg = "Truffaut lo-fi kinfolk, vegan roof party palo santo meggings bro
 // const szoveg = "Truffaut lo-fi kinfolk, vegan roof party palo santo meggings brooklyn.";
 
 function getWidth (config) {
-    return config.width ?? 500
+    return config.width || 500
 }
 
 function getHeight (config) {
-    return config.height ?? 500
+    return config.height || 500
 }
 
 function layoutMaker (bonyesz) {
@@ -101,13 +102,13 @@ function layoutMaker (bonyesz) {
                     text: d,
                     size: 10 + weight * 90,
                     color: `rgb(${Math.round(255 * Math.random())},${Math.round(0 * Math.random())},${Math.round(255 * Math.random())})`,
-                    betuTipus: bonyesz.botu ?? 'Impact',
-                    stilus: bonyesz.stil ?? 'normal',
-                    vastagsag: bonyesz.vastag ?? 'normal',
+                    betuTipus: bonyesz.botu || 'Impact',
+                    stilus: bonyesz.stil || 'normal',
+                    vastagsag: bonyesz.vastag || 'normal',
                     hovirag: true,
                 }}))
 
-        .padding(bonyesz.padding ?? 5)
+        .padding(bonyesz.padding || 5)
      /* .rotate(function () {
             return Math.random()*(vegSzog()-kezdoSzog())+kezdoSzog();
         // .rotate(function () {
@@ -116,7 +117,7 @@ function layoutMaker (bonyesz) {
      */
         .rotate(function () {
             const szogTartomany = bonyesz.vsz - bonyesz.ksz;
-            const count = bonyesz.count ?? 360;
+            const count = bonyesz.count || 360;
             const lepesVagyIntervallumSzam = count - 1;
             const szogLepes = szogTartomany / lepesVagyIntervallumSzam;
             const randomUpTo = function (upto) {
@@ -135,11 +136,28 @@ function layoutMaker (bonyesz) {
 
 const layout = layoutMaker(conf);
 
+const root = document.body.appendChild(document.createElement("div"));
 
-layout.on('end', draw).start();
-
-const fs = d => {
+const problema = (d) => {
     return d.size + "px";
+}
+
+function drawReact(words) {
+    const modell = {
+        cim: "Monfera Katalin",
+        szaml: 89
+    }
+
+    const Harmadik = (props) => <h1>On ezt a lapot ennyiszer latogatta: {props.szamlalo}</h1>
+
+    const View = (krumpli) =>
+        <div>
+            <h1>{krumpli.model.cim}</h1>
+            <Harmadik szamlalo={krumpli.model.szaml}/>
+            <h1>Hello, world2!</h1>
+        </div>
+
+    ReactDOM.render(<View model={modell}/>, root);
 }
 
 function draw(words) {
@@ -151,7 +169,7 @@ function draw(words) {
     .selectAll("text")
       .data(words)
     .enter().append("text")
-      .style("font-size", fs)
+      .style("font-size", problema)
       .style("font-family", getFont)
       .style("font-style", getFontStyle)
       .style("font-weight", getFontWeight)
@@ -165,3 +183,5 @@ function draw(words) {
       })
       .text(function(d) { return d.text });
 }
+
+layout.on('end', draw).start();
