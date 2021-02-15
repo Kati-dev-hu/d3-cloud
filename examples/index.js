@@ -7,8 +7,8 @@ const configs =  {
         height: 1000,
             },
     teglalap: {
-        width: 1000,
-        height: 600
+        width: 700,
+        height: 400
     },
     suru: {
         padding: 2
@@ -157,7 +157,26 @@ function drawReact(words) {
             <h1>Hello, world2!</h1>
         </div>
 
-    ReactDOM.render(<View model={modell}/>, root);
+    const View2 = () => <svg width={getWidth(conf)} height={getHeight(conf)}>
+        <g transform={`translate(${getWidth(conf) / 2}, ${getHeight(conf) / 2})`}>
+            {words.map(d => <text
+                style={{
+                    transform: `translate(${d.x}, ${d.y}) rotate(${d.rotate})`,
+                    fontSize: problema(d),
+                    fontStyle: getFontStyle(d),
+                    fontFamily: getFont(d),
+                    fontWeight: getFontWeight(d),
+                    fill: d.color
+                }}
+                textAnchor={'middle'}
+                transform={`translate(${d.x}, ${d.y}) rotate(${d.rotate})`}
+            >
+                {d.text}
+            </text>)}
+        </g>
+    </svg>
+
+    ReactDOM.render(<View2 model={modell}/>, root);
 }
 
 function draw(words) {
@@ -184,4 +203,4 @@ function draw(words) {
       .text(function(d) { return d.text });
 }
 
-layout.on('end', draw).start();
+layout.on('end', drawReact).start();
