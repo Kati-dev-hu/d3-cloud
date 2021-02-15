@@ -143,21 +143,7 @@ const problema = (d) => {
 }
 
 function drawReact(words) {
-    const modell = {
-        cim: "Monfera Katalin",
-        szaml: 89
-    }
-
-    const Harmadik = (props) => <h1>On ezt a lapot ennyiszer latogatta: {props.szamlalo}</h1>
-
-    const View = (krumpli) =>
-        <div>
-            <h1>{krumpli.model.cim}</h1>
-            <Harmadik szamlalo={krumpli.model.szaml}/>
-            <h1>Hello, world2!</h1>
-        </div>
-
-    const View2 = () => <svg width={getWidth(conf)} height={getHeight(conf)}>
+    const View = () => <svg width={getWidth(conf)} height={getHeight(conf)}>
         <g transform={`translate(${getWidth(conf) / 2}, ${getHeight(conf) / 2})`}>
             {words.map(d => <text
                 style={{
@@ -176,7 +162,7 @@ function drawReact(words) {
         </g>
     </svg>
 
-    ReactDOM.render(<View2 model={modell}/>, root);
+    ReactDOM.render(<View model={modell}/>, root);
 }
 
 function draw(words) {
@@ -202,5 +188,6 @@ function draw(words) {
       })
       .text(function(d) { return d.text });
 }
+
 
 layout.on('end', drawReact).start();
