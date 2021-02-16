@@ -142,52 +142,27 @@ const problema = (d) => {
     return d.size + "px";
 }
 
-function drawReact(words) {
-    const View = () => <svg width={getWidth(conf)} height={getHeight(conf)}>
-        <g transform={`translate(${getWidth(conf) / 2}, ${getHeight(conf) / 2})`}>
-            {words.map(d => <text
-                style={{
-                    transform: `translate(${d.x}, ${d.y}) rotate(${d.rotate})`,
-                    fontSize: problema(d),
-                    fontStyle: getFontStyle(d),
-                    fontFamily: getFont(d),
-                    fontWeight: getFontWeight(d),
-                    fill: d.color
-                }}
-                textAnchor={'middle'}
-                transform={`translate(${d.x}, ${d.y}) rotate(${d.rotate})`}
-            >
-                {d.text}
-            </text>)}
-        </g>
-    </svg>
+const View = ({words, conf}) => <svg width={getWidth(conf)} height={getHeight(conf)}>
+    <g transform={`translate(${getWidth(conf) / 2}, ${getHeight(conf) / 2})`}>
+        {words.map(d => <text
+            style={{
+                transform: `translate(${d.x}, ${d.y}) rotate(${d.rotate})`,
+                fontSize: problema(d),
+                fontStyle: getFontStyle(d),
+                fontFamily: getFont(d),
+                fontWeight: getFontWeight(d),
+                fill: d.color
+            }}
+            textAnchor={'middle'}
+            transform={`translate(${d.x}, ${d.y}) rotate(${d.rotate})`}
+        >
+            {d.text}
+        </text>)}
+    </g>
+</svg>
 
-    ReactDOM.render(<View model={modell}/>, root);
+function drawReact(w) {
+    ReactDOM.render(<View words={w} conf={conf}/>, root);
 }
-
-function draw(words) {
-    d3.select("body").append("svg")
-      .attr("width", getWidth(conf))
-      .attr("height", getHeight(conf))
-      .append("g")
-      .attr("transform", `translate(${getWidth(conf) / 2}, ${getHeight(conf) / 2})`)
-    .selectAll("text")
-      .data(words)
-    .enter().append("text")
-      .style("font-size", problema)
-      .style("font-family", getFont)
-      .style("font-style", getFontStyle)
-      .style("font-weight", getFontWeight)
-      .style("fill", (d) => d.color)
-      .attr("text-anchor", "middle")
-      .attr("transform", 'translate(1000,1000) rotate(0)')
-      .transition()
-      .duration(1000)
-      .attr("transform", function(d) {
-          return `translate(${d.x}, ${d.y}) rotate(${d.rotate})`;
-      })
-      .text(function(d) { return d.text });
-}
-
 
 layout.on('end', drawReact).start();
